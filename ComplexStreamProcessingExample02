@@ -1,0 +1,54 @@
+You have a list of Order objects. Each order has multiple LineItems. You want to:
+
+Filter orders placed in the last 30 days.
+
+Flatten all LineItems from these orders.
+
+Group by product category.
+
+Compute total revenue per category.
+
+Sort categories by revenue descending.
+//*******************************************************
+
+import java.time.LocalDate;
+import java.util.*;
+import java.util.stream.*;
+
+public class StreamProcessingExample {
+
+    // Record classes for immutability and pattern matching
+    record LineItem(String productName, String category, int quantity, double unitPrice) {}
+    record Order(int orderId, LocalDate orderDate, List<LineItem> items) {}
+
+    public static void main(String[] args) {
+        // Sample data
+        List<Order> orders = List.of(
+            new Order(1, LocalDate.now().minusDays(10), List.of(
+                new LineItem("MacBook Pro", "Electronics", 1, 2500),
+                new LineItem("HDMI Cable", "Accessories", 2, 10)
+            )),
+            new Order(2, LocalDate.now().minusDays(40), List.of(
+                new LineItem("iPhone", "Electronics", 1, 1000)
+            )),
+            new Order(3, LocalDate.now().minusDays(5), List.of(
+                new LineItem("USB Hub", "Accessories", 3, 15),
+                new LineItem("Keyboard", "Electronics", 2, 120)
+            ))
+        );
+
+        // Processing pipeline
+        Map<String, Double> revenueByCategory = orders.stream()
+            .filter(order -> order.orderDate().isAfter(LocalDate.now().minusDays(30)))
+            .flatMap(order -> order.items().stream())
+            .collect(Collectors.groupingBy(
+                LineItem::category,
+                Collectors.summingDouble(item -> item.quantity() * item.unitPrice())
+            ));
+
+        // Sorting and displaying results
+        revenueByCategory.entrySet().stream()
+            .sorted(Map.Entry.<String, Double>comparingByValue().reversed())
+            .forEach(entry -> System.out.printf("Category: %-12s Revenue: $%.2f%n", entry.getKey(), entry.getValue()));
+    }
+}
