@@ -1,0 +1,25 @@
+Palindrome Permutation Detector
+Task - Check if "tactcoa" can be rearranged into a palindrome.
+public boolean canFormPalindrome(String s) {
+    int[] charCount = new int[128];
+    
+    // Count character frequencies
+    for (char c : s.toCharArray()) {
+        charCount[c]++;
+    }
+    
+    // Count characters with odd frequency
+    int oddCount = 0;
+    for (int count : charCount) {
+        if (count % 2 != 0) {
+            oddCount++;
+        }
+        
+        // More than one character with odd frequency means no palindrome possible
+        if (oddCount > 1) {
+            return false;
+        }
+    }
+    
+    return true;
+}
