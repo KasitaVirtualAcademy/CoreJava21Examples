@@ -1,0 +1,25 @@
+Sample Task
+Write a function that finds all duplicate numbers in an integer array.
+
+Solution Example
+import java.util.HashSet;
+
+public class FindDuplicates {
+    public static HashSet<Integer> findDuplicates(int[] nums) {
+        HashSet<Integer> duplicates = new HashSet<>();
+        HashSet<Integer> seen = new HashSet<>();
+        
+        for (int num : nums) {
+            if (!seen.add(num)) { // If add returns false, it's a duplicate
+                duplicates.add(num);
+            }
+        }
+        
+        return duplicates;
+    }
+
+    public static void main(String[] args) {
+        int[] input = {1, 2, 3, 4, 2, 3, 5};
+        System.out.println(findDuplicates(input)); // Output: [2, 3]
+    }
+}
