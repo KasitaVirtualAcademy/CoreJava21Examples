@@ -1,0 +1,16 @@
+Sample Task
+Perform multi-stage, complex data transformations using Java Streams.
+
+Solution Example
+public List<Employee> processEmployeeData(List<Employee> employees) {
+    return employees.stream()
+        .filter(e -> e.getDepartment().equals("Engineering"))
+        .sorted(Comparator.comparing(Employee::getSalary).reversed())
+        .map(e -> {
+            // Complex transformation logic
+            e.setBonusEligibility(calculateBonusEligibility(e));
+            return e;
+        })
+        .limit(10)
+        .collect(Collectors.toList());
+}
